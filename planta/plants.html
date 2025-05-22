@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisa de Plantas - Plant Dictionary</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .search-section {
+            padding: 2rem;
+            background-color: var(--light-green);
+            text-align: center;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 2px solid var(--primary-color);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .search-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .results-section {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .plant-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .plant-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .plant-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .plant-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .plant-info {
+            padding: 1.5rem;
+        }
+
+        .plant-info h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .plant-info p {
+            color: var(--text-color);
+            margin-bottom: 1rem;
+        }
+
+        .plant-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .plant-tag {
+            background-color: var(--light-green);
+            color: var(--primary-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .filters-section {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .filter-group select {
+            padding: 0.5rem;
+            border: 1px solid var(--primary-color);
+            border-radius: 4px;
+            background-color: white;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-color);
+        }
+
+        .plant-difficulty {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .difficulty-dots {
+            display: flex;
+            gap: 0.2rem;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+        }
+
+        .dot.filled {
+            background-color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <i class="fas fa-leaf"></i>
+                <h1>Plant Dictionary</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html#home">Início</a></li>
+                <li><a href="plants.html">Plantas</a></li>
+                <li><a href="calendar.html">Calendário</a></li>
+                <li><a href="#knowledge">Conhecimento</a></li>
+                <li><a href="#login" class="login-btn">Entrar</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="search-section">
+            <div class="search-container">
+                <h2>Encontre sua Planta Ideal</h2>
+                <p>Pesquise por nome, tipo ou características específicas</p>
+                <form class="search-form" id="plantSearchForm">
+                    <input type="text" class="search-input" placeholder="Digite o nome da planta..." id="plantSearch">
+                    <button type="submit" class="search-button">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                </form>
+                <div class="filters-section">
+                    <h3>Filtros</h3>
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label for="plantType">Tipo de Planta</label>
+                            <select id="plantType">
+                                <option value="">Todos</option>
+                                <option value="fruteira">Fruteira</option>
+                                <option value="medicinal">Medicinal</option>
+                                <option value="aromática">Aromática</option>
+                                <option value="ornamental">Ornamental</option>
+                                <option value="hortaliça">Hortaliça</option>
+                                <option value="suculenta">Suculenta</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="difficulty">Dificuldade</label>
+                            <select id="difficulty">
+                                <option value="">Todas</option>
+                                <option value="1">Fácil</option>
+                                <option value="2">Médio</option>
+                                <option value="3">Difícil</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="light">Luminosidade</label>
+                            <select id="light">
+                                <option value="">Todas</option>
+                                <option value="sol">Sol Pleno</option>
+                                <option value="sombra">Sombra</option>
+                                <option value="meia-sombra">Meia Sombra</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="results-section">
+            <div class="plant-grid" id="plantResults">
+                <!-- Exemplos de plantas -->
+                <div class="plant-card">
+                    <img src="https://images.unsplash.com/photo-1512428813834-c702c7702b78" alt="Suculenta" class="plant-image">
+                    <div class="plant-info">
+                        <h3>Suculenta Echeveria</h3>
+                        <div class="plant-difficulty">
+                            <span>Dificuldade:</span>
+                            <div class="difficulty-dots">
+                                <div class="dot filled"></div>
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                            </div>
+                        </div>
+                        <p>Planta suculenta de fácil cultivo, ideal para iniciantes. Requer pouca água e muita luz solar.</p>
+                        <div class="plant-tags">
+                            <span class="plant-tag">Suculenta</span>
+                            <span class="plant-tag">Sol Pleno</span>
+                            <span class="plant-tag">Fácil</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="plant-card">
+                    <img src="https://images.unsplash.com/photo-1598887141928-7c70b1e42716" alt="Orquídea" class="plant-image">
+                    <div class="plant-info">
+                        <h3>Orquídea Phalaenopsis</h3>
+                        <div class="plant-difficulty">
+                            <span>Dificuldade:</span>
+                            <div class="difficulty-dots">
+                                <div class="dot filled"></div>
+                                <div class="dot filled"></div>
+                                <div class="dot"></div>
+                            </div>
+                        </div>
+                        <p>Orquídea popular conhecida por suas flores duradouras. Prefere ambiente úmido e meia sombra.</p>
+                        <div class="plant-tags">
+                            <span class="plant-tag">Ornamental</span>
+                            <span class="plant-tag">Meia Sombra</span>
+                            <span class="plant-tag">Médio</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="plant-card">
+                    <img src="https://images.unsplash.com/photo-1598887141928-7c70b1e42716" alt="Manjericão" class="plant-image">
+                    <div class="plant-info">
+                        <h3>Manjericão</h3>
+                        <div class="plant-difficulty">
+                            <span>Dificuldade:</span>
+                            <div class="difficulty-dots">
+                                <div class="dot filled"></div>
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                            </div>
+                        </div>
+                        <p>Erva aromática e medicinal muito utilizada na culinária e para chás. Cresce bem em vasos e precisa de sol direto.</p>
+                        <div class="plant-tags">
+                            <span class="plant-tag">Erva Aromática</span>
+                            <span class="plant-tag">Erva Medicinal</span>
+                            <span class="plant-tag">Sol Pleno</span>
+                            <span class="plant-tag">Fácil</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="plant-card">
+                    <img src="https://images.unsplash.com/photo-1598887141928-7c70b1e42716" alt="Pitangueira" class="plant-image">
+                    <div class="plant-info">
+                        <h3>Pitangueira</h3>
+                        <div class="plant-difficulty">
+                            <span>Dificuldade:</span>
+                            <div class="difficulty-dots">
+                                <div class="dot filled"></div>
+                                <div class="dot filled"></div>
+                                <div class="dot"></div>
+                            </div>
+                        </div>
+                        <p>Árvore frutífera nativa do Brasil, produz frutos saborosos e ricos em vitamina C. Pode ser cultivada em vasos grandes.</p>
+                        <div class="plant-tags">
+                            <span class="plant-tag">Fruteira</span>
+                            <span class="plant-tag">Sol Pleno</span>
+                            <span class="plant-tag">Médio</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="plant-card">
+                    <img src="https://images.unsplash.com/photo-1598887141928-7c70b1e42716" alt="Boldo" class="plant-image">
+                    <div class="plant-info">
+                        <h3>Boldo</h3>
+                        <div class="plant-difficulty">
+                            <span>Dificuldade:</span>
+                            <div class="difficulty-dots">
+                                <div class="dot filled"></div>
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                            </div>
+                        </div>
+                        <p>Planta medicinal conhecida por suas propriedades digestivas. Suas folhas são usadas para fazer chá.</p>
+                        <div class="plant-tags">
+                            <span class="plant-tag">Erva Medicinal</span>
+                            <span class="plant-tag">Meia Sombra</span>
+                            <span class="plant-tag">Fácil</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Plant Dictionary</h3>
+                <p>Seu guia para o cultivo perfeito</p>
+            </div>
+            <div class="footer-section">
+                <h3>Links Úteis</h3>
+                <ul>
+                    <li><a href="#about">Sobre</a></li>
+                    <li><a href="#contact">Contato</a></li>
+                    <li><a href="#privacy">Privacidade</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Plant Dictionary. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Função para lidar com a pesquisa de plantas
+        document.getElementById('plantSearchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const searchTerm = document.getElementById('plantSearch').value.toLowerCase();
+            const plantType = document.getElementById('plantType').value;
+            const difficulty = document.getElementById('difficulty').value;
+            const light = document.getElementById('light').value;
+
+            // Aqui você pode implementar a lógica de filtragem real
+            console.log('Pesquisando por:', {
+                termo: searchTerm,
+                tipo: plantType,
+                dificuldade: difficulty,
+                luminosidade: light
+            });
+
+            // Exemplo de filtragem simples
+            const plantCards = document.querySelectorAll('.plant-card');
+            plantCards.forEach(card => {
+                const cardText = card.textContent.toLowerCase();
+                const cardType = card.querySelector('.plant-tag').textContent.toLowerCase();
+                const cardDifficulty = card.querySelectorAll('.dot.filled').length;
+                const cardLight = Array.from(card.querySelectorAll('.plant-tag'))
+                    .find(tag => tag.textContent.includes('Sol') || tag.textContent.includes('Sombra'))?.textContent;
+
+                const matchesSearch = searchTerm === '' || cardText.includes(searchTerm);
+                const matchesType = plantType === '' || cardType.includes(plantType);
+                const matchesDifficulty = difficulty === '' || cardDifficulty === parseInt(difficulty);
+                const matchesLight = light === '' || (cardLight && cardLight.toLowerCase().includes(light));
+
+                card.style.display = matchesSearch && matchesType && matchesDifficulty && matchesLight ? 'block' : 'none';
+            });
+        });
+
+        // Adicionar listeners para os filtros
+        document.querySelectorAll('.filter-group select').forEach(select => {
+            select.addEventListener('change', () => {
+                document.getElementById('plantSearchForm').dispatchEvent(new Event('submit'));
+            });
+        });
+    </script>
+</body>
+</html> 
